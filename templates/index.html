@@ -1,156 +1,308 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Login / Signup</title>
-    <style>
-        body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: 'Jost', sans-serif;
-    background: url("https://img.freepik.com/free-photo/abstract-blurred-multi-colored-background-generative-ai_169016-30200.jpg") no-repeat center / cover;
-}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hr Yuvi Joon</title>
 
-.main {
-    width: 350px;
-    height: 500px;
-    overflow: hidden;
-    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqPKd_kIMCIBWoc3EtFuiO_h9p1eWuw_1LCf6M26H3urVblnXUbWmdYTwDAYWIgXNDTJ8&usqp=CAU") no-repeat center / cover;
-    border-radius: 10px;
-    box-shadow: 5px 20px 50px #000;
-}
+  <!-- Jost font (same as your previous design) -->
+  <link href="https://fonts.googleapis.com/css?family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
 
-#chk {
-    display: none;
-}
+  <style>
+    :root{
+      --card-bg: rgba(255,255,255,0.85);
+      --accent: #1f2937;
+      --btn-primary-bg: #0f172a;
+      --btn-primary-color: #fff;
+      --btn-outline: rgba(15,23,42,0.08);
+      --radius: 14px;
+      --shadow: 0 8px 30px rgba(2,6,23,0.18);
+    }
 
-.signup, .login {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s ease-in-out;
-}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: 'Jost', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      color: var(--accent);
+      background-color: #0b1020;
+    }
 
-label {
-    color: #fff;
-    font-size: 2.3em;
-    justify-content: center;
-    display: flex;
-    margin: 60px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .5s ease-in-out;
-}
+    /* Background image — change URL below if you want a different image.
+       This uses the same image link you earlier shared as a default. */
+    body::before{
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("https://pbs.twimg.com/media/DMd7Td9VwAACHJC.jpg");
+      background-size: cover;
+      background-position: center;
+      filter: saturate(0.95) contrast(0.95) brightness(0.75);
+      z-index: -2;
+    }
 
-input {
-    width: 60%;
-    height: 20px;
-    background: #e0dede;
-    justify-content: center;
-    display: flex;
-    margin: 20px auto;
-    padding: 10px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-}
+    /* soft gradient overlay */
+    body::after{
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(6,11,30,0.25) 0%, rgba(6,11,30,0.45) 100%);
+      z-index: -1;
+    }
 
-button {
-    width: 60%;
-    height: 40px;
-    margin: 10px auto;
-    justify-content: center;
-    display: block;
-    color: #fff;
-    background: #573b8a;
-    font-size: 1em;
-    font-weight: bold;
-    margin-top: 20px;
-    outline: none;
-    border: none;
-    border-radius: 5px;
-    transition: 0.2s ease-in;
-    cursor: pointer;
-}
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 36px;
+      box-sizing: border-box;
+    }
 
-button:hover {
-    background: #6d44b8;
-}
+    .card {
+      width: 100%;
+      max-width: 980px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.82));
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      overflow: hidden;
+    }
 
-.login {
-    height: 460px;
-    background: #eee;
-    border-radius: 60% / 10%;
-    transform: translateY(-180px);
-}
+    /* Left panel (hero) */
+    .hero {
+      padding: 48px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:18px;
+    }
+    .logo {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      font-weight:700;
+      font-size:20px;
+    }
+    .logo .dot {
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      background: linear-gradient(135deg,#ffd166,#ef476f);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-weight:800;
+      box-shadow: 0 6px 18px rgba(239,71,111,0.18);
+    }
+    .headline {
+      font-size:36px;
+      line-height:1.03;
+      margin:0;
+      color:#071126;
+    }
+    .sub {
+      color: #243142;
+      opacity:0.9;
+      margin:0;
+      font-size:15px;
+      max-width:60ch;
+    }
 
-.login label {
-    color: #573b8a;
-    transform: scale(.6);
-}
+    /* Right panel (auth area) */
+    .auth {
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.9));
+      padding: 34px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:stretch;
+      justify-content:center;
+      border-left: 1px solid rgba(15,23,42,0.04);
+    }
 
-#chk:checked ~ .login {
-    transform: translateY(-500px);
-}
+    .auth h3 {
+      margin:0 0 6px 0;
+      font-size:20px;
+      color:var(--accent);
+    }
 
-#chk:checked ~ .login label {
-    transform: scale(1);
-}
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 18px;
+      border-radius:12px;
+      font-weight:600;
+      cursor:pointer;
+      border: 1px solid transparent;
+      text-decoration:none;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-color);
+      box-shadow: 0 8px 22px rgba(2,6,23,0.18);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--btn-outline);
+      color: var(--accent);
+    }
 
-#chk:checked ~ .signup label {
-    transform: scale(.6);
-}
+    .auth .actions{
+      display:flex;
+      gap:12px;
+      margin-top:6px;
+    }
 
-/* Flash message styling */
-.flash {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: #fff;
-    font-weight: bold;
-    z-index: 1000;
-}
+    footer {
+      margin-top:12px;
+      font-size:13px;
+      color:#334155;
+      opacity:0.9;
+    }
 
-.flash.success { background-color: #28a745; }
-.flash.danger { background-color: #dc3545; }
-.flash.info { background-color: #007bff; }
-.flash.warning { background-color: #ffc107; }
+    /* welcome popup */
+    .welcome-popup {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 40px;
+      background: rgba(255,255,255,0.96);
+      padding: 14px 18px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.18);
+      display: none;
+      z-index: 9999;
+      font-weight:600;
+    }
 
-@media (max-width: 400px) {
-    .main { width: 90%; }
-}
-    </style>
+    /* logout button top-right */
+    .logout {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 6px 20px rgba(2,6,23,0.12);
+      display: none; /* shown via JS when "loggedIn" */
+      z-index: 1000;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    /* small screens */
+    @media (max-width: 880px) {
+      .card { grid-template-columns: 1fr; max-width:720px; }
+      .hero { padding:28px; }
+      .auth { padding:22px; order:2; }
+      .headline { font-size:28px; }
+    }
+    @media (max-width:420px) {
+      .hero { padding:18px; }
+      .auth { padding:16px; }
+      .logo .dot { width:40px; height:40px; border-radius:10px; }
+      .headline { font-size:22px; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Signup</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, msg in messages %}
-              <div class="flash {{category}}">{{msg}}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-        <form method="POST" action="{{ url_for('signup') }}">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Signup</button>
-        </form>
+  <!-- Logout button (JS will toggle display when user is "logged in") -->
+  <button id="logoutBtn" class="logout" title="Logout">Logout</button>
 
-        <h2>Login</h2>
-        <form method="POST" action="{{ url_for('login') }}">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
+  <div class="page">
+    <div class="card" role="main" aria-labelledby="main-heading">
+      <section class="hero" aria-hidden="false">
+        <div class="logo">
+          <div class="dot">HY</div>
+          <div>
+            <div style="font-size:14px; color:#0b1220; opacity:0.8;">Hr Yuvi Joon</div>
+            <div style="font-size:12px; color:#0b1220; opacity:0.6">Welcome back</div>
+          </div>
+        </div>
+
+        <h1 id="main-heading" class="headline">A clean, familiar front-end<br>— preserved the original design.</h1>
+        <p class="sub">Use the buttons on the right to login or create an account. This page is responsive, keeps the same font and background style you were using, and includes a brief welcome popup that disappears after 10 seconds.</p>
+
+        <footer>
+          © <span id="year"></span> Hr Yuvi Joon · Built with Jost font
+        </footer>
+      </section>
+
+      <aside class="auth" aria-labelledby="auth-heading">
+        <h3 id="auth-heading">Sign in to continue</h3>
+        <p style="margin:0 0 8px 0; color:#475569; font-size:14px">Fast login & OTP / email-ready (connect to your Flask backend).</p>
+
+        <div class="actions">
+          <!-- Hook these links to your Flask routes or to actual pages in your repo -->
+          <a class="btn btn-primary" href="login.html">Login</a>
+          <a class="btn btn-outline" href="signup.html">Sign up</a>
+        </div>
+
+        <div style="margin-top:10px; font-size:13px; color:#475569">
+          Or continue as a guest:
+        </div>
+        <div style="margin-top:8px;">
+          <a class="btn btn-outline" href="welcome.html">Continue</a>
+        </div>
+
+        <footer style="margin-top:18px;">
+          Need to connect OTP/email? Replace the `href`s above with Flask `url_for('login')` and `url_for('signup')` when rendering from templates.
+        </footer>
+      </aside>
     </div>
+  </div>
+
+  <!-- temporary welcome popup that shows for 10 seconds -->
+  <div id="welcomePopup" class="welcome-popup">Welcome back — you will be logged out automatically when session expires.</div>
+
+  <script>
+    // set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // show welcome popup for 10s on page load (only once per session)
+    (function(){
+      const popup = document.getElementById('welcomePopup');
+      const shownKey = 'welcomeShown_v1';
+      if (!sessionStorage.getItem(shownKey)) {
+        popup.style.display = 'block';
+        // hide after 10 seconds
+        setTimeout(() => { popup.style.display = 'none'; }, 10000);
+        sessionStorage.setItem(shownKey, '1');
+      }
+    })();
+
+    // Simple logged-in toggle for UI demo:
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    function refreshAuthUI(){
+      // If your backend sets a cookie or you use server-side templating:
+      // replace this check with server-provided variable, or set localStorage from your login flow.
+      const isLogged = localStorage.getItem('loggedIn') === 'true';
+      if (isLogged) {
+        logoutBtn.style.display = 'inline-flex';
+      } else {
+        logoutBtn.style.display = 'none';
+      }
+    }
+
+    // Hook logout button
+    logoutBtn.addEventListener('click', () => {
+      // clear demo flag — replace this with a call to your logout endpoint (Flask)
+      localStorage.removeItem('loggedIn');
+      refreshAuthUI();
+      // optionally redirect to login:
+      window.location.href = 'login.html';
+    });
+
+    // call on load
+    refreshAuthUI();
+  </script>
 </body>
 </html>
-
