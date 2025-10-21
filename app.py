@@ -96,7 +96,7 @@ def signup():
         session['otp_time'] = time.time()
         session['resend_count'] = 0
 
-        send_otp_email(email, otp, username_display=username)
+        # send_otp_email(email, otp, username_display=username)
         flash("Signup successful — OTP sent.", "info")
         return redirect(url_for('verify'))
 
@@ -190,3 +190,4 @@ def logout():
 
 if __name__=="__main__":
     app.run(debug=True)
+
