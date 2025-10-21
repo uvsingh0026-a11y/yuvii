@@ -54,16 +54,15 @@ def signup():
     conn = get_db()
     c = conn.cursor()
     try:
-        c.execute("INSERT INTO users (username,email,password) VALUES (?,?,?)",
-                  (username,email,hashed_pw))
+        c.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
+                  (username, email, hashed_pw))
         conn.commit()
-        conn.close()
         flash("Signup successful. You can now login.", "success")
-        return redirect(url_for('index'))
     except sqlite3.IntegrityError:
-        conn.close()
         flash("Email already exists.", "warning")
-        return redirect(url_for('index'))
+    finally:
+        conn.close()
+    return redirect(url_for('index'))
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -72,7 +71,7 @@ def login():
 
     conn = get_db()
     c = conn.cursor()
-    c.execute("SELECT * FROM users WHERE email=?",(email,))
+    c.execute("SELECT * FROM users WHERE email=?", (email,))
     user = c.fetchone()
     conn.close()
 
@@ -102,5 +101,5 @@ def logout():
     flash("Logged out.", "info")
     return redirect(url_for('index'))
 
-if __name__=="__main__":
+if __name__ == "__main__":
     app.run(debug=True)
