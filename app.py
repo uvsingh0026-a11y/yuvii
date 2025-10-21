@@ -1,17 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
-import os
+import sqlite3, os
 
-# ---------------- Flask setup ----------------
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
 # ---------------- Database setup ----------------
-DB_DIR = os.path.join(app.root_path, "instance")
+DB_DIR = app.instance_path
+os.makedirs(DB_DIR, exist_ok=True)
 DB_PATH = os.path.join(DB_DIR, "database.db")
-if not os.path.exists(DB_DIR):
-    os.makedirs(DB_DIR)
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -102,4 +99,4 @@ def logout():
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
