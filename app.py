@@ -1,17 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+# from sendgrid import SendGridAPIClient
+# from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
 import sqlite3
 import os
 import time
 import random
 
-# ---------------- Load environment ----------------
+# ---------------- Load environment variables ----------------
 load_dotenv()
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-FROM_EMAIL = os.getenv("FROM_EMAIL")
+# SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+# FROM_EMAIL = os.getenv("FROM_EMAIL")
 
 # ---------------- Flask setup ----------------
 app = Flask(__name__)
@@ -52,17 +52,24 @@ OTP_TTL_SECONDS = 5*60
 MAX_RESEND_ATTEMPTS = 3
 
 def send_otp_email(to_email, otp_code, username_display=None):
-    body_html = f"<h3>Hello {username_display},</h3><p>Your OTP is <b>{otp_code}</b>.</p>" if username_display else f"<p>Your OTP is <b>{otp_code}</b>.</p>"
-    message = Mail(
-        from_email=FROM_EMAIL,
-        to_emails=to_email,
-        subject="Your OTP Verification",
-        html_content=body_html
-    )
-    sg = SendGridAPIClient(SENDGRID_API_KEY)
-    sg.send(message)
+    """
+    SendGrid OTP sending function.
+    Currently commented to avoid 401 Unauthorized errors on Render.
+    Uncomment and set environment variables to use.
+    """
+    # body_html = f"<h3>Hello {username_display},</h3><p>Your OTP is <b>{otp_code}</b>.</p>" if username_display else f"<p>Your OTP is <b>{otp_code}</b>.</p>"
+    # message = Mail(
+    #     from_email=FROM_EMAIL,
+    #     to_emails=to_email,
+    #     subject="Your OTP Verification",
+    #     html_content=body_html
+    # )
+    # sg = SendGridAPIClient(SENDGRID_API_KEY)
+    # sg.send(message)
+    print(f"[DEBUG] OTP for {to_email} is {otp_code}")  # Console debug
 
 def form_get_multi(form, *names, default=""):
+    """Helper to get first available field from form."""
     for n in names:
         if n in form:
             return form.get(n, "").strip()
@@ -96,7 +103,9 @@ def signup():
         session['otp_time'] = time.time()
         session['resend_count'] = 0
 
+        # Optional OTP email
         # send_otp_email(email, otp, username_display=username)
+
         flash("Signup successful — OTP sent.", "info")
         return redirect(url_for('verify'))
 
@@ -112,7 +121,7 @@ def verify():
         otp_entered = form_get_multi(request.form,'otp')
         conn = get_db()
         c = conn.cursor()
-        c.execute("SELECT otp,verified FROM users WHERE email=?",(pending_email,))
+        c.execute("SELECT otp,verified,username FROM users WHERE email=?",(pending_email,))
         row = c.fetchone()
         if not row:
             conn.close()
@@ -163,7 +172,7 @@ def login():
         session['pending_email']=email
         session['otp_time']=time.time()
         flash("Account not verified. OTP sent.", "warning")
-        send_otp_email(email, otp, username_display=user['username'])
+        # send_otp_email(email, otp, username_display=user['username'])
         return redirect(url_for('verify'))
 
     if check_password_hash(user['password'],password):
@@ -190,4 +199,3 @@ def logout():
 
 if __name__=="__main__":
     app.run(debug=True)
-
